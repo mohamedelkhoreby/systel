@@ -1,16 +1,16 @@
 part of '../view/home_page.dart';
 
 class WalletView extends StatelessWidget {
-  WalletView({super.key});
-  ParseUser? currentUser;
-
-  Future<ParseUser?> getUser() async {
-    currentUser = await ParseUser.currentUser() as ParseUser?;
-    return currentUser;
-  }
+  const WalletView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ParseUser currentUser;
+    Future<ParseUser> getUser() async {
+      currentUser = await ParseUser.currentUser() as ParseUser;
+      return currentUser;
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

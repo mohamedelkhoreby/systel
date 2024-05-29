@@ -1,8 +1,4 @@
-import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:sizer/sizer.dart';
@@ -90,8 +86,8 @@ class HomePageState extends State<HomePage> {
                                   switch (snapshot.connectionState) {
                                     case ConnectionState.none:
                                     case ConnectionState.waiting:
-                                      return Center(
-                                        child: Container(
+                                      return const Center(
+                                        child: SizedBox(
                                             width: 100,
                                             height: 100,
                                             child: CircularProgressIndicator()),
@@ -110,7 +106,7 @@ class HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  WalletView(),
+                 const WalletView(),
                   SizedBox(
                     height: 4.h,
                   ),

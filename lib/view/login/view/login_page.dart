@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,107 +14,20 @@ import '../../../../core/routes/app_routes_fun.dart';
 import '../../../../core/routes/routes.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String _name = '';
-  String _email = '';
   bool _error = false;
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
+  // Regular expression pattern to match email addresses
+  RegExp regex = RegExp(r'\@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b');
   bool isLoggedIn = false;
-  _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      final username = controllerUsername.text.trim();
-      final password = controllerPassword.text.trim();
-      final user = ParseUser(username, password, null);
-
-      var response = await user.login();
-
-      if (response.success) {
-        showSuccess("User was successfully login!");
-        setState(() {
-          isLoggedIn = true;
-        });
-      } else {
-        doUserRegistration();
-      }
-    } else {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
-  void doUserRegistration() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      final username = controllerUsername.text.trim();
-      final password = controllerPassword.text.trim();
-      final user = ParseUser.createUser(username, password, username);
-
-      var response = await user.signUp();
-      if (response.success) {
-        showSuccess("User was successfully login!");
-        setState(() {
-          isLoggedIn = true;
-        });
-      } else {
-        showError(response.error!.message);
-      }
-    } else {
-      setState(() {
-        _error = true;
-      });
-    }
-  }
-
-  void showSuccess(String message) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Success!"),
-          content: Text(message),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                await push(NamedRoutes.main);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void showError(String errorMessage) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Error!"),
-          content: Text(errorMessage),
-          actions: <Widget>[
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,9 +128,6 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null; // Return null if the name is valid
                       },
-                      onSaved: (value) {
-                        _name = value!; // Save the entered name
-                      },
                     ),
                   ),
                   SizedBox(
@@ -272,9 +183,6 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
-                      onSaved: (value) {
-                        _email = value!;
-                      },
                     ),
                   ),
                 ],
@@ -306,6 +214,104 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  // function to login or start register
+  _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final username = controllerUsername.text.trim();
+      final password = controllerPassword.text.trim();
+      if (await InternetConnectionChecker().hasConnection) {
+        final user = ParseUser(username, password, null);
+
+        var response = await user.login();
+
+        if (response.success) {
+          _showSuccess("User was successfully login!");
+          setState(() {
+            isLoggedIn = true;
+          });
+        } else {
+          _doUserRegistration();
+        }
+      } else {
+        _showError("No Internet");
+      }
+    } else {
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+  // function to register
+  _doUserRegistration() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      final username = controllerUsername.text.trim();
+      final password = controllerPassword.text.trim();
+      print(username.replaceAll(regex, ''));
+      final user = ParseUser.createUser(
+          username.replaceAll(regex, ''), password, username);
+
+      var response = await user.signUp();
+      if (response.success) {
+        _showSuccess("User was successfully Register!");
+        setState(() {
+          isLoggedIn = true;
+        });
+      } else {
+        _showError(response.error!.message);
+      }
+    } else {
+      setState(() {
+        _error = true;
+      });
+    }
+  }
+
+//show pop dialog when login or register success
+  _showSuccess(String message) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Success!"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                await push(NamedRoutes.main);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+//show pop dialog when login or register feild
+  _showError(String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Error!"),
+          content: Text(errorMessage),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

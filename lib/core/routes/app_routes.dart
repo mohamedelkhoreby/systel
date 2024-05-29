@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:systel/core/routes/routes.dart';
 import 'package:systel/view/home/view/home_page.dart';
 
-import '../../view/auth/login/view/login_page.dart';
+import '../../view/login/view/login_page.dart';
+
 
 class RouteGenerator {
   static Route<dynamic> getRoute(RouteSettings settings) {
