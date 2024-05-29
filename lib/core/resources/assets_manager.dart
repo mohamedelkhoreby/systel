@@ -13,4 +13,6 @@ class SvgAssets {
   static const String notification = "$svgpath/Path 747.svg";
   static const String payment = "$svgpath/noun-payment-1351307.svg";
   static const String wallet = "$svgpath/noun-wallet-4908884.svg";
+  static const String lock = "$svgpath/lock.svg";
+  static const String unlock = "$svgpath/unlock.svg";
 }

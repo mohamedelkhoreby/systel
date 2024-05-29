@@ -30,6 +30,8 @@ flutter:
     - assets/svg/Path 747.svg
     - assets/svg/noun-payment-1351307.svg
     - assets/svg/noun-wallet-4908884.svg
+    - assets/svg/unlock.svg
+    - assets/svg/lock.svg
   fonts:
     - family: Tajawal
       fonts:

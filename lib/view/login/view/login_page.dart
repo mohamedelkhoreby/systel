@@ -25,9 +25,10 @@ class LoginPageState extends State<LoginPage> {
   bool _error = false;
   final controllerUsername = TextEditingController();
   final controllerPassword = TextEditingController();
+  bool isLoggedIn = true;
+
   // Regular expression pattern to match email addresses
   RegExp regex = RegExp(r'\@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b');
-  bool isLoggedIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +86,6 @@ class LoginPageState extends State<LoginPage> {
                     width: 84.w,
                     child: TextFormField(
                       controller: controllerUsername,
-                      enabled: !isLoggedIn,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
                       autocorrect: false,
@@ -93,6 +93,7 @@ class LoginPageState extends State<LoginPage> {
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
                         filled: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                         fillColor: ColorManager.white,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
@@ -138,8 +139,7 @@ class LoginPageState extends State<LoginPage> {
                     width: 84.w,
                     child: TextFormField(
                       controller: controllerPassword,
-                      enabled: !isLoggedIn,
-                      obscureText: true,
+                      obscureText: isLoggedIn,
                       keyboardType: TextInputType.text,
                       textCapitalization: TextCapitalization.none,
                       autocorrect: false,
@@ -149,6 +149,7 @@ class LoginPageState extends State<LoginPage> {
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: ColorManager.white,
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
                         border: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                           borderSide: BorderSide(
@@ -169,13 +170,34 @@ class LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         label: Center(
-                          child: Text(
-                            StringsManager.password,
-                            style: regularTajawalStyle(
-                                fontSize: FontSize.s16,
-                                color: ColorManager.black),
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 10.w),
+                            child: Text(
+                              StringsManager.password,
+                              style: regularTajawalStyle(
+                                  fontSize: FontSize.s16,
+                                  color: ColorManager.black),
+                            ),
                           ),
                         ),
+                        suffixIcon: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                isLoggedIn = !isLoggedIn;
+                              });
+                            },
+                            iconSize: 15,
+                            icon: isLoggedIn
+                                ? SvgPicture.asset(
+                                    SvgAssets.lock,
+                                    height: 15,
+                                    width: 15,
+                                  )
+                                : SvgPicture.asset(
+                                    SvgAssets.unlock,
+                                    height: 15,
+                                    width: 15,
+                                  )),
                       ),
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -252,7 +274,6 @@ class LoginPageState extends State<LoginPage> {
       _formKey.currentState!.save();
       final username = controllerUsername.text.trim();
       final password = controllerPassword.text.trim();
-      print(username.replaceAll(regex, ''));
       final user = ParseUser.createUser(
           username.replaceAll(regex, ''), password, username);
 

@@ -9,7 +9,7 @@ class StringsManager {
   static const String lastActivity = "LAST ACTIVITY";
   static const String egy = "EGY";
   static const String transaction = "Transaction on";
-  static const String lastUpdata = "Last update";
+  static const String lastupdate = "Last update";
   static const String lastSpend = "Last Spend";
   static const String totalSpending = "Total Spending";
   static const String test = "Test";

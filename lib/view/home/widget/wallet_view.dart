@@ -87,7 +87,7 @@ class WalletView extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    "${StringsManager.lastUpdata} 24/6",
+                    "${StringsManager.lastupdate} 24/6",
                     style: regularTajawalStyle(
                         fontSize: 10, color: ColorManager.gray),
                   ),
