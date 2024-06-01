@@ -81,32 +81,33 @@ class HomePageState extends State<HomePage> {
                                     color: ColorManager.white,
                                     fontSize: FontSize.s15)),
                             FutureBuilder<ParseUser?>(
-                                future: getUser(),
-                                builder: (context, snapshot) {
-                                  switch (snapshot.connectionState) {
-                                    case ConnectionState.none:
-                                    case ConnectionState.waiting:
-                                      return const Center(
-                                        child: SizedBox(
-                                            width: 100,
-                                            height: 100,
-                                            child: CircularProgressIndicator()),
-                                      );
-                                    default:
-                                      return Text(
-                                        "${snapshot.data?.username}",
-                                        style: semiBlodTajawal(
-                                            color: ColorManager.white,
-                                            fontSize: FontSize.s15),
-                                      );
-                                  }
-                                }),
+                              future: getUser(),
+                              builder: (context, snapshot) {
+                                switch (snapshot.connectionState) {
+                                  case ConnectionState.none:
+                                  case ConnectionState.waiting:
+                                    return const Center(
+                                      child: SizedBox(
+                                          width: 100,
+                                          height: 100,
+                                          child: CircularProgressIndicator()),
+                                    );
+                                  default:
+                                    return Text(
+                                      "${snapshot.data?.username}",
+                                      style: semiBlodTajawal(
+                                          color: ColorManager.white,
+                                          fontSize: FontSize.s15),
+                                    );
+                                }
+                              },
+                            ),
                           ],
                         )
                       ],
                     ),
                   ),
-                 const WalletView(),
+                  const WalletView(),
                   SizedBox(
                     height: 4.h,
                   ),
